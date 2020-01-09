@@ -1,6 +1,8 @@
 extern crate sdl2;
 extern crate rand;
 
+use crate::graphics;
+
 use super::emulator::Emulator;
 
 use rand::prelude::*;
@@ -17,10 +19,11 @@ pub struct Screen {
     canvas: Canvas<Window>,
     buffer: Vec<u32>,
     rng: ThreadRng, // TEMP: random pixels
+    tex_gen: TextureCreator<WindowContext>,
 }
 
 impl Screen {
-    pub fn new(sdl: &Sdl) -> Result<(Self, TextureCreator<WindowContext>), String>{
+    pub fn new(sdl: &Sdl) -> Result<Self, String>{
         let video = sdl.video()?;
         let window = video.window("coolboy v1.0", WIDTH * PIXEL_SIZE, HEIGHT * PIXEL_SIZE)
             .position_centered()
@@ -39,13 +42,24 @@ impl Screen {
             canvas: canvas,
             buffer: vec![0; 160 * 144],
             rng: rand::thread_rng(),
+            tex_gen: texture_creator,
         };
 
-        Ok((screen, texture_creator))
+        Ok(screen)
     }
 
     pub fn update_buffer(&self, emu: &Emulator) {
         
+    }
+
+    pub fn make_texture(&self) -> Result<Texture, String> {
+        let mut texture = self.tex_gen.create_texture_streaming(
+            PixelFormatEnum::RGB24,
+            graphics::WIDTH * graphics::PIXEL_SIZE,
+            graphics::HEIGHT * graphics::PIXEL_SIZE)
+            .map_err(|e| e.to_string())?;
+
+        Ok(texture)
     }
 
     pub fn draw(&mut self) {
