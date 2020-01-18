@@ -31,8 +31,8 @@ impl std::convert::From<Flags> for u8 {
 }
 
 impl Registers {
-    pub fn new() -> Registers {
-        Registers {
+    pub fn new() -> Self {
+        let mut registers = Registers {
             a: 0,
             b: 0,
             c: 0,
@@ -41,20 +41,16 @@ impl Registers {
             f: Flags::from(0),
             h: 0,
             l: 0,
-        }
-    }
-
-    pub fn initialized() -> Registers {
-        let mut registers = Registers::new();
+        };
         registers.init();
         registers
     }
 
     fn init(&mut self) {
-        self.set_af(0x01b0);
+        self.set_af(0x01B0);
         self.set_bc(0x0013);
-        self.set_de(0x00d8);
-        self.set_hl(0x014d);
+        self.set_de(0x00D8);
+        self.set_hl(0x014D);
     }
 
     pub fn af(&self) -> u16 {

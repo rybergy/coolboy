@@ -48,8 +48,8 @@ impl Screen {
         
     }
 
-    pub fn draw(&mut self) {
-        println!("Drawing");
+    pub fn draw(&mut self, texture: &Texture) {
+        info!("Drawing to screen");
         self.canvas.clear();
         self.canvas.present();
     }
